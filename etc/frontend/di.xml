@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright (c) 2022. All rights reserved.
+  ~ @author: Volodymyr Hryvinskyi <mailto:volodymyr@hryvinskyi.com>
+  -->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Hryvinskyi\PageSpeedApi\Model\ModificationsList">
+        <arguments>
+            <argument name="modifications" xsi:type="array">
+                <item name="move_css_to_bottom" xsi:type="array">
+                    <item name="object" xsi:type="object">Hryvinskyi\PageSpeedCssFrontendUi\Model\MoveToBottom</item>
+                    <item name="sortOrder" xsi:type="number">150</item>
+                </item>
+                <item name="merge_critical_css" xsi:type="array">
+                    <item name="object" xsi:type="object">Hryvinskyi\PageSpeedCssFrontendUi\Model\MergeCriticalCss</item>
+                    <item name="sortOrder" xsi:type="number">160</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Framework\View\Result\Layout">
+        <plugin name="asyncCssLoad" disabled="true" />
+    </type>
+</config>
