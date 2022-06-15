@@ -72,7 +72,7 @@ class MergeCriticalCss implements ModificationInterface
             $resultString = $cutElData['content'] . "\n" . $resultString;
             $html = $this->replaceIntoHtml->execute($html, '', $cutElData['start'], $cutElData['end']);
         }
-        $resultString = '<style>' . $this->cssMinifier->minify($resultString) . '</style>';
+        $resultString = '<style data-type="criticalCss">' . $this->cssMinifier->minify($resultString) . '</style>';
 
         $html = $this->insertStringBeforeHeadEnd->execute($resultString, $html);
     }

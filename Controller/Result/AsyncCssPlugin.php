@@ -37,7 +37,7 @@ class AsyncCssPlugin
      *
      * @param Layout $subject
      * @param Layout $result
-     * @param HttpResponseInterface|ResponseInterface $httpResponse
+     * @param ResponseInterface $httpResponse
      * @return Layout (That should be void, actually)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -68,6 +68,7 @@ class AsyncCssPlugin
      * Extracts link tags found in given content.
      *
      * @param string $content
+     * @return string
      */
     private function extractLinkTags(string &$content): string
     {

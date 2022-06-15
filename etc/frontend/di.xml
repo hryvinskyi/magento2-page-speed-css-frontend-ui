@@ -9,12 +9,12 @@
     <type name="Hryvinskyi\PageSpeedApi\Model\ModificationsList">
         <arguments>
             <argument name="modifications" xsi:type="array">
-                <item name="move_css_to_bottom" xsi:type="array">
-                    <item name="object" xsi:type="object">Hryvinskyi\PageSpeedCssFrontendUi\Model\MoveToBottom</item>
-                    <item name="sortOrder" xsi:type="number">150</item>
-                </item>
                 <item name="merge_critical_css" xsi:type="array">
                     <item name="object" xsi:type="object">Hryvinskyi\PageSpeedCssFrontendUi\Model\MergeCriticalCss</item>
+                    <item name="sortOrder" xsi:type="number">150</item>
+                </item>
+                <item name="move_css_to_bottom" xsi:type="array">
+                    <item name="object" xsi:type="object">Hryvinskyi\PageSpeedCssFrontendUi\Model\MoveToBottom</item>
                     <item name="sortOrder" xsi:type="number">160</item>
                 </item>
             </argument>

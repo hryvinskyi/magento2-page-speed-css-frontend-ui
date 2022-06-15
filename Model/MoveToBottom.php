@@ -20,27 +20,27 @@ use Magento\Store\Model\ScopeInterface;
 class MoveToBottom implements ModificationInterface
 {
     private CssFinderInterface $cssFinder;
-    private InsertStringBeforeHeadEndInterface $insertStringBeforeBodyEnd;
+    private InsertStringBeforeHeadEndInterface $insertStringBeforeHeadEnd;
     private ReplaceIntoHtmlInterface $replaceIntoHtml;
     private CanCssMoveToBottomInterface $canCssMoveToBottom;
     private ScopeConfigInterface $scopeConfig;
 
     /**
      * @param CssFinderInterface $cssFinder
-     * @param InsertStringBeforeHeadEndInterface $insertStringBeforeBodyEnd
+     * @param InsertStringBeforeHeadEndInterface $insertStringBeforeHeadEnd
      * @param ReplaceIntoHtmlInterface $replaceIntoHtml
      * @param CanCssMoveToBottomInterface $canCssMoveToBottom
      * @param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
         CssFinderInterface $cssFinder,
-        InsertStringBeforeHeadEndInterface $insertStringBeforeBodyEnd,
+        InsertStringBeforeHeadEndInterface $insertStringBeforeHeadEnd,
         ReplaceIntoHtmlInterface $replaceIntoHtml,
         CanCssMoveToBottomInterface $canCssMoveToBottom,
         ScopeConfigInterface $scopeConfig
     ) {
         $this->cssFinder = $cssFinder;
-        $this->insertStringBeforeBodyEnd = $insertStringBeforeBodyEnd;
+        $this->insertStringBeforeHeadEnd = $insertStringBeforeHeadEnd;
         $this->replaceIntoHtml = $replaceIntoHtml;
         $this->canCssMoveToBottom = $canCssMoveToBottom;
         $this->scopeConfig = $scopeConfig;
@@ -52,9 +52,9 @@ class MoveToBottom implements ModificationInterface
      */
     public function execute(&$html): void
     {
-//        if ($this->scopeConfig->isSetFlag('dev/css/use_css_critical_path', ScopeInterface::SCOPE_STORE) === false) {
-//            return;
-//        }
+        if ($this->scopeConfig->isSetFlag('dev/css/use_css_critical_path', ScopeInterface::SCOPE_STORE) === false) {
+            return;
+        }
 
         $tagList = $this->cssFinder->findExternal($html);
         $cutData = [];
@@ -78,6 +78,6 @@ class MoveToBottom implements ModificationInterface
             $html = $this->replaceIntoHtml->execute($html, '', $cutElData['start'], $cutElData['end']);
         }
 
-        $html = $this->insertStringBeforeBodyEnd->execute($resultString, $html);
+        $html = $this->insertStringBeforeHeadEnd->execute($resultString, $html);
     }
 }
