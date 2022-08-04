@@ -13,6 +13,7 @@ use Hryvinskyi\PageSpeedApi\Api\Finder\CssInterface as CssFinderInterface;
 use Hryvinskyi\PageSpeedApi\Api\Html\InsertStringBeforeHeadEndInterface;
 use Hryvinskyi\PageSpeedApi\Api\Html\ReplaceIntoHtmlInterface;
 use Hryvinskyi\PageSpeedApi\Model\ModificationInterface;
+use Hryvinskyi\PageSpeedCss\Api\ConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Code\Minifier\Adapter\Css\CSSmin;
 use Magento\Store\Model\ScopeInterface;
@@ -24,25 +25,30 @@ class MergeCriticalCss implements ModificationInterface
     private ReplaceIntoHtmlInterface $replaceIntoHtml;
     private ScopeConfigInterface $scopeConfig;
     private CSSmin $cssMinifier;
+    private ConfigInterface $config;
 
     /**
      * @param CssFinderInterface $cssFinder
      * @param InsertStringBeforeHeadEndInterface $insertStringBeforeHeadEnd
      * @param ReplaceIntoHtmlInterface $replaceIntoHtml
      * @param ScopeConfigInterface $scopeConfig
+     * @param CSSmin $cssMinifier
+     * @param ConfigInterface $config
      */
     public function __construct(
         CssFinderInterface $cssFinder,
         InsertStringBeforeHeadEndInterface $insertStringBeforeHeadEnd,
         ReplaceIntoHtmlInterface $replaceIntoHtml,
         ScopeConfigInterface $scopeConfig,
-        CSSmin $cssMinifier
+        CSSmin $cssMinifier,
+        ConfigInterface $config
     ) {
         $this->cssFinder = $cssFinder;
         $this->insertStringBeforeHeadEnd = $insertStringBeforeHeadEnd;
         $this->replaceIntoHtml = $replaceIntoHtml;
         $this->scopeConfig = $scopeConfig;
         $this->cssMinifier = $cssMinifier;
+        $this->config = $config;
     }
 
     /**
@@ -51,7 +57,8 @@ class MergeCriticalCss implements ModificationInterface
      */
     public function execute(&$html): void
     {
-        if ($this->scopeConfig->isSetFlag('dev/css/use_css_critical_path', ScopeInterface::SCOPE_STORE) === false) {
+        if ($this->scopeConfig->isSetFlag('dev/css/use_css_critical_path', ScopeInterface::SCOPE_STORE) === false
+            || $this->config->isEnableMergeInlineCss() === false) {
             return;
         }
 
@@ -65,7 +72,6 @@ class MergeCriticalCss implements ModificationInterface
                 'content' => preg_replace('/(<(style)\b[^>]*>)(.*?)(<\/\2>)/is', "$3", $tag->getContent())
             ];
         }
-
 
         $resultString = '';
         foreach (array_reverse($replaceData) as $cutElData) {

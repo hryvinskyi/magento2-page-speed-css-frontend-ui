@@ -14,6 +14,7 @@ use Hryvinskyi\PageSpeedApi\Api\Html\InsertStringBeforeHeadEndInterface;
 use Hryvinskyi\PageSpeedApi\Api\Html\ReplaceIntoHtmlInterface;
 use Hryvinskyi\PageSpeedApi\Model\ModificationInterface;
 use Hryvinskyi\PageSpeedCss\Api\CanCssMoveToBottomInterface;
+use Hryvinskyi\PageSpeedCss\Api\ConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 
@@ -24,6 +25,7 @@ class MoveToBottom implements ModificationInterface
     private ReplaceIntoHtmlInterface $replaceIntoHtml;
     private CanCssMoveToBottomInterface $canCssMoveToBottom;
     private ScopeConfigInterface $scopeConfig;
+    private ConfigInterface $config;
 
     /**
      * @param CssFinderInterface $cssFinder
@@ -31,19 +33,22 @@ class MoveToBottom implements ModificationInterface
      * @param ReplaceIntoHtmlInterface $replaceIntoHtml
      * @param CanCssMoveToBottomInterface $canCssMoveToBottom
      * @param ScopeConfigInterface $scopeConfig
+     * @param ConfigInterface $config
      */
     public function __construct(
         CssFinderInterface $cssFinder,
         InsertStringBeforeHeadEndInterface $insertStringBeforeHeadEnd,
         ReplaceIntoHtmlInterface $replaceIntoHtml,
         CanCssMoveToBottomInterface $canCssMoveToBottom,
-        ScopeConfigInterface $scopeConfig
+        ScopeConfigInterface $scopeConfig,
+        ConfigInterface $config
     ) {
         $this->cssFinder = $cssFinder;
         $this->insertStringBeforeHeadEnd = $insertStringBeforeHeadEnd;
         $this->replaceIntoHtml = $replaceIntoHtml;
         $this->canCssMoveToBottom = $canCssMoveToBottom;
         $this->scopeConfig = $scopeConfig;
+        $this->config = $config;
     }
 
     /**
@@ -52,7 +57,8 @@ class MoveToBottom implements ModificationInterface
      */
     public function execute(&$html): void
     {
-        if ($this->scopeConfig->isSetFlag('dev/css/use_css_critical_path', ScopeInterface::SCOPE_STORE) === false) {
+        if ($this->scopeConfig->isSetFlag('dev/css/use_css_critical_path', ScopeInterface::SCOPE_STORE) === false
+            || $this->config->isEnableMoveToBottom() === false) {
             return;
         }
 
